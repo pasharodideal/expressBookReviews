@@ -30,30 +30,37 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  const reqauthor = req.params.author;
+    //Write your code here
+    const reqauthor = req.params.author;
 
-  const booksByAuthor = [];
+    const booksByAuthor = [];
 
-  for (let isbn in books) {
-    if (books[isbn].author === reqauthor) {
-        booksByAuthor.push(books[isbn]);
+    for (let isbn in books) {
+        if (books[isbn].author === reqauthor) {
+            booksByAuthor.push(books[isbn]);
+        }
     }
-  }
 
-  if (booksByAuthor.length>0) {
-    res.status(200).send(booksByAuthor);
-  }
-  
-  else {
-    res.status(404).send(`Unable to find any books by ${reqauthor}.`);
-  }
+    if (booksByAuthor.length>0) {
+        res.status(200).send(booksByAuthor);
+    }
+    else {
+        res.status(404).send(`Unable to find any books by ${reqauthor}.`);
+    }
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    //Write your code here
+    const reqtitle = req.params.title;
+
+    for (let isbn in books) {
+        if (books[isbn].title === reqtitle) {
+            res.status(200).send(books[isbn]);
+        }
+    }
+    
+    res.status(404).send(`Unable to find any books with this title: ${reqtitle}.`);
 });
 
 //  Get book review
