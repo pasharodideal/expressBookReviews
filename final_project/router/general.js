@@ -16,17 +16,12 @@ public_users.post("/register", (req, res) => {
             }
         }
         
-        users[req.body.username] = {
-            "username": req.body.username,
-            "password": req.body.password
-        }
-
-        /*const newUser = {
+        const newUser = {
             username: req.body.username, 
             password: req.body.password
         };
 
-        users.push(newUser);*/
+        users.push(newUser);
         
         return res.status(200).send(`The user "${req.body.username}" was successfuly registered!`);
     }
