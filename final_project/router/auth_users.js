@@ -70,8 +70,32 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
         book.reviews.push({ username, review });
     }
 
-    return res.send(`Review posted successfully. 
+    return res.send(`Your review for the book with ISBN ${isbn} was successfully posted. 
                      See your review here: ${JSON.stringify(book.reviews)}`);
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    const username = req.user.username;
+
+    let book = books[isbn];
+
+    if(!book) {
+        return res.status(404).send('Book not found');
+    }
+
+    if (!book.reviews) {
+        return res.status(404).send('No reviews to delete.')
+    }
+
+    const initialRevCount = book.reviews.length;
+    book.reviews = book.reviews.filter(review => review.username !== username);
+
+    if (book.reviews.length === initialRevCount) {
+        return res.status(404).send('Review not found or already deleted.');
+    }
+
+    return res.send(`Review by ${username} for the book with the ISBN ${isbn} deleted successfully.`);
 });
 
 module.exports.authenticated = regd_users;
