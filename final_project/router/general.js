@@ -108,17 +108,31 @@ public_users.get('/books/author/:author',function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/books/title/:title', function (req, res) {
     //Write your code here
     const reqtitle = req.params.title;
 
-    for (let isbn in books) {
-        if (books[isbn].title === reqtitle) {
-            res.status(200).send(books[isbn]);
-        }
-    }
+    const getBookByTitle = new Promise ((resolve, reject) => {
+        for (let isbn in books) {
+            if (books[isbn].title === reqtitle) {
+                resolve(books[isbn]);
+            }
+        };
+
+        reject(`Unable to find any books with this title: ${reqtitle}.`);
+    });
     
-    res.status(404).send(`Unable to find any books with this title: ${reqtitle}.`);
+    getBookByTitle
+        .then(bbtitle => {
+            res.status(200).send(bbtitle);
+        })
+        .catch(error => {
+            res.status(404).send(error);
+        })
+        .finally(() => {
+            console.log("Resolved or Rejected.");
+        });
+    
 });
 
 //  Get book review
