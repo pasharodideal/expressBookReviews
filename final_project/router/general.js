@@ -1,5 +1,4 @@
 const express = require('express');
-const axios = require('axios').default;
 
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
@@ -40,16 +39,6 @@ public_users.post("/register", (req, res) => {
     res.send(JSON.stringify(books, null, 4));
 });*/
 
-const fetchBooksFromURL = async (url) => {
-    try {
-        const response = await axios.get(url);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching books:', error);
-        throw new Error('Failed to fetch books');
-    }
-};
-
 // Get all books
 public_users.get('/books', function (req, res) {
     const getBooks = new Promise((resolve, reject) => {
@@ -59,16 +48,18 @@ public_users.get('/books', function (req, res) {
   });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/books/isbn/:isbn',function (req, res){
   //Write your code here
   const isbn = req.params.isbn;
-  if (books[isbn]) {
-    res.send(books[isbn]);
-  }
-  else {
-    res.send("Unable to find book with that isbn.")
-  }
- });
+  
+  const getBooksISBN = new Promise((resolve, reject) => {
+    resolve(books[isbn] ?
+        res.send(books[isbn]) : res.send("Unable to find book with that isbn."));
+    });
+    getBooksISBN.then(() => console.log("Resolved"));
+  });
+  
+
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
