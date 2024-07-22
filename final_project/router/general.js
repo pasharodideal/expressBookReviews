@@ -50,13 +50,27 @@ public_users.get('/books', function (req, res) {
 // Get book details based on ISBN
 public_users.get('/books/isbn/:isbn',function (req, res){
   //Write your code here
-  const isbn = req.params.isbn;
+    const isbn = req.params.isbn;
   
-  const getBooksISBN = new Promise((resolve, reject) => {
-    resolve(books[isbn] ?
-        res.send(books[isbn]) : res.send("Unable to find book with that isbn."));
+    const getBooksISBN = new Promise((resolve, reject) => {
+        if (books[isbn]) {
+            resolve(books[isbn]);
+        } 
+        else {
+            reject("Unable to find book with that isbn.");
+        };
     });
-    getBooksISBN.then(() => console.log("Resolved"));
+
+    getBooksISBN
+        .then(book => { 
+            res.status(200).send(book);
+        })
+        .catch(error => {
+            res.status(404).send(error);
+        })
+        .finally(() => {
+            console.log("Promise resolved or rejected.");
+        });
   });
   
 
